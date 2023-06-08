@@ -1,0 +1,22 @@
+{
+  "name": "simply",
+  "version": "0.0.0",
+  "description": "simple fast and powerful",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "start": "http-server -o -c 1",
+    "build": "node build.js"
+  },
+  "type": "module",
+  "author": "ali.ibr.div.io",
+  "license": "MIT",
+  "dependencies": {
+    "esbuild": ""
+  },
+  "bin": {
+    "aaa": "bin/aaa.js"
+  }
+}

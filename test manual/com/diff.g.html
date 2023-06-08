@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<script type = 'module' src='../../lib/src/com/diff.g.js'></script>
+<script type ='module'>
+	globalThis.a = (o, n) => {
+		var d = $diff.simple(o,n);
+		var c = [...o];
+		d.forEach(i=>{
+			if (i.type === 'add') c.splice(i.ind, 0, ...n.slice(i.nind, i.nind + i.count));
+			if (i.type === 'change') c.splice(i.ind, i.count, ...n.slice(i.nind, i.nind + i.count));
+			if (i.type === 'delete') c.splice(i.ind, i.count);
+		});
+		return [d, c, n.toString() === c.toString(),o,n]
+	}
+	globalThis.s = (s) => {
+		return Array.from({length: s}).map(i=>Math.round(Math.random() * 10))
+	}
+	a(s(10), s(10))
+</script>

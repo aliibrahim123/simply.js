@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<script type = 'module' src='../../lib/src/com/copy.g.js'></script>
+<script type = 'module'>
+globalThis.aaa = function generateComplexData() {
+  const circularObj = { name: 'Circular Object' };
+  const circularArray = [1, 2, 3];
+  circularObj.circularRef = circularObj;
+  circularArray.push(circularArray);
+
+  const nestedObj1 = {
+    name: 'Nested Object 1',
+    circularObj,
+    circularArray
+  };
+
+  const nestedObj2 = {
+    name: 'Nested Object 2',
+    nestedObj1
+  };
+
+  const nestedObj3 = {
+    name: 'Nested Object 3',
+    nestedObj2
+  };
+
+  const complexData = {
+    name: 'Complex Data',
+    nestedObj1,
+    nestedObj2,
+    nestedObj3,
+    circularObj,
+    circularArray,
+    date: new Date(),
+    regex: /pattern/g,
+    set: new Set([1, 2, 3]),
+    map: new Map([['key1', 'value1'], ['key2', 'value2']]),
+    typedArray: new Uint32Array([1, 2, 3]),
+    error: new Error('Something went wrong'),
+    promise: new Promise((resolve, reject) => {
+      resolve('Promise resolved');
+    }),
+    bigInt: BigInt(9007199254740991),
+    symbols: {
+      symbol1: Symbol('Symbol 1'),
+      symbol2: Symbol('Symbol 2')
+    }
+  };
+
+  return complexData;
+}
+</script>
