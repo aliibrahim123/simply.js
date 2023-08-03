@@ -1,22 +1,19 @@
 {
-  "name": "simply",
-  "version": "0.0.0",
-  "description": "simple fast and powerful",
-  "main": "lib/index.js",
-  "files": [
-    "lib"
-  ],
-  "scripts": {
-    "start": "http-server -o -c 1",
-    "build": "node build.js"
-  },
-  "type": "module",
-  "author": "ali.ibr.div.io",
-  "license": "MIT",
-  "dependencies": {
-    "esbuild": ""
-  },
-  "bin": {
-    "aaa": "bin/aaa.js"
-  }
+	"name": "simply",
+	"version": "0.0.1",
+	"description": "simple fast and powerful",
+	"scripts": {
+		"start": "http-server -o -c 1",
+		"build": "node build.js"
+	},
+	"type": "module",
+	"author": "ali.ibr.div.io",
+	"license": "MIT",
+	"devDependencies": {
+		"esbuild": "",
+		"http-server": ""
+	},
+	"bin": {
+		
+	}
 }

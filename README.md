@@ -1,3 +1,4 @@
 # simply.js
 simple, fast, powerful
-comming soon
+
+stil in pre-alpha

@@ -1,18 +1,2 @@
 <!DOCTYPE html>
 <script type = 'module' src='../../lib/src/dom/edit.js'></script>
-<script type = 'module' src='../../lib/src/dom/base.js'></script>
-<div contenteditable>hallo <u>hallo</u> <b>hallo</b> <u>ha<b>ll</b></u><b>o</b></div>
-<button tag='b'>b</button>
-<button tag='u'>u</button>
-<button tag='i'>i</button>
-
-<script type='module'>
-$el('[tag]').forEach(el=>{
-	var tag = el.getAttribute('tag');
-	el.addEventListener('click', (e) => {
-		e.preventDefault();
-		if ($edit.isWrappedWith(tag)) $edit.undo(tag);
-		else $edit.surround($el.tag(tag))
-	})
-})
-</script>
