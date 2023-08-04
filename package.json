@@ -1,19 +1,26 @@
 {
-	"name": "simply",
+	"name": "@simplyjs/full",
 	"version": "0.0.1",
 	"description": "simple fast and powerful",
 	"scripts": {
-		"start": "http-server -o -c 1",
-		"build": "node build.js"
+		"start": "http-server -o",
+		"build": "node build.js",
+		"genMTest": "node genMTest.js",
+		"genPackages": "node genPackages.js"
 	},
 	"type": "module",
-	"author": "ali.ibr.div.io",
+	"author": "aliibrahim123",
+	"homepage": "https://aliibrahim123.github.io/simply.js/",
+	"bugs": {
+		"url":"https://github.com/aliibrahim123/simply.js/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/aliibrahim123/simply.js.git"
+	},
 	"license": "MIT",
 	"devDependencies": {
 		"esbuild": "",
 		"http-server": ""
-	},
-	"bin": {
-		
 	}
 }

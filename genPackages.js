@@ -18,7 +18,7 @@ var packages = [
 ];
 
 //extract package.json
-var { version, description, author, license } = JSON.parse(await readFile('./package.json'));
+var { version, description, author, license, homepage, bugs, repository } = JSON.parse(await readFile('./package.json'));
 
 //create packages folder
 await rm('./packages', { recursive: true, force: true })
@@ -31,8 +31,8 @@ packages.forEach(async pack => {
 	
 	//create package.js
 	writeFile('./packages/' + pack.name + '/package.json', JSON.stringify({
-		name: 'simply-' + pack.name,
-		version, description, author, license,
+		name: '@simplyjs/' + pack.name,
+		version, description, author, license, homepage, bugs, repository,
 		type: 'module',
 		...pack.package
 	}));
