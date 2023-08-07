@@ -7,8 +7,9 @@ import make from './lib/src/cli/base.js';
 var program = make('generate', '0.0.1')
 	.describe('generate manual test', 'used to generate files to manualy test the api');
 	
-	program.option(['-d', '--dist'], '', 'use minified files', false)
+	program.option(['-c', '--comp', '--compressed'], '', 'use minified files', false)
 	.option(['-f', '--force'], '', 'overwrite files', false)
+	.option(['-l', '--log'], '', 'log results', false)
 
 program.handle(async (args) => {
 	//create folders
@@ -35,6 +36,7 @@ program.handle(async (args) => {
 		['com/functional.g', 2],
 		['com/timing.g', 2],
 		['com/reactive.g', 2],
+		['com/type.g', 2],
 		['com/promise.g', 2],
 		['dom/base', 2],
 		['dom/chain', 2],
@@ -49,7 +51,7 @@ program.handle(async (args) => {
 `;
 		if (args.force || !existsSync('test manual/' + item[0] + '.html')) {
 			writeFile('test manual/' + item[0] + '.html', str);
-			console.log('generated: test manual/' + item[0] + '.html')
+			if (args.log) console.log('generated: test manual/' + item[0] + '.html')
 		}
 	});
 })

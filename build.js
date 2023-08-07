@@ -24,6 +24,8 @@ var scripts = [
 	'com/function.js',
 	'com/functional.g.js',
 	'com/functional.js',
+	'com/type.js',
+	'com/type.g.js',
 	'com/reactive.g.js',
 	'com/reactive.js',
 	'com/promise.g.js',
