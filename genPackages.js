@@ -7,6 +7,7 @@ import compPack from './packages-src/comp.js';
 import domPack from './packages-src/dom.js';
 import debugPack from './packages-src/debug.js';
 import cliPack from './packages-src/cli.js';
+import encodePack from './packages-src/encode.js';
 
 var packages = [
 	libPack,
@@ -14,7 +15,8 @@ var packages = [
 	compPack,
 	cliPack,
 	domPack,
-	debugPack
+	debugPack,
+	encodePack
 ];
 
 //extract package.json

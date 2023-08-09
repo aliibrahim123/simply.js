@@ -17,7 +17,8 @@ program.handle(async (args) => {
 		'dom',
 		'comp',
 		'com',
-		'debug'
+		'debug',
+		'encode'
 	].map(i=>{
 		return mkdir('test manual/' + i + '/', { recursive: true });
 	}));
@@ -41,6 +42,7 @@ program.handle(async (args) => {
 		['dom/base', 2],
 		['dom/chain', 2],
 		['dom/edit', 2],
+		['encode/csv.g', 2],
 		['comp/base', 2],
 		['debug/expect', 2],
 		['debug/assert.g', 2],

@@ -42,6 +42,8 @@ var scripts = [
 	'cli/ansi.js',
 	'cli/prompt.g.js',
 	'cli/prompt.js',
+	'encode/csv.js',
+	'encode/csv.g.js',
 	'debug/expect.js',
 	'debug/assert.g.js',
 	'debug/assert.js',
