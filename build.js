@@ -44,6 +44,8 @@ var scripts = [
 	'cli/prompt.js',
 	'encode/csv.js',
 	'encode/csv.g.js',
+	'encode/toml.js',
+	'encode/toml.g.js',
 	'debug/expect.js',
 	'debug/assert.g.js',
 	'debug/assert.js',
