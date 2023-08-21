@@ -44,6 +44,8 @@ program.handle(async (args) => {
 		['dom/edit', 2],
 		['encode/csv.g', 2],
 		['encode/toml.g', 2],
+		['encode/mine.g', 2],
+		['encode/mine.lite.g', 2],
 		['comp/base', 2],
 		['debug/expect', 2],
 		['debug/assert.g', 2],
