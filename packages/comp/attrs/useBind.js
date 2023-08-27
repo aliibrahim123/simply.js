@@ -4,13 +4,14 @@ var useBindHandler = {
 		attrs.forEach(attr=>{
 			if (!attr.startsWith('bind(')) return;
 			
+			//split according to syntax: bind(...props):method:arg
 			var arg, parenEnd = attr.indexOf(')'); //parenthesis end;
-			var prop = attr.slice(attr.indexOf('(')+1, parenEnd).split(',');
+			var props = attr.slice(attr.indexOf('(')+1, parenEnd).split(',');
 			var method = attr.slice(parenEnd + 2);
 			if (method.includes(':')) [method, arg] = method.split(':');
 			
 			if (!this.methods[method]) throw new CompError('bind:attrs: undefined method (' + method + ')');
-			this.methods[method](comp, el, el.getAttribute(attr), prop, attr, arg ? arg.replace(/--./, (i)=>i[2].toUpperCase()) : undefined);
+			this.methods[method](comp, el, el.getAttribute(attr), props, attr, arg ? arg.replaceAll(/--./g, (i)=>i[2].toUpperCase()) : undefined);
 		})
 		return true
 	},

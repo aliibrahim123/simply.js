@@ -1,7 +1,9 @@
 //edit utilities
 
+import { checkel, checkstr, checkfn, checknode } from './check.js';
+
 export var unwrap = (el) => {
-	if (!el?.nodeType) throw new TypeError('edit: element of type (' + el?.constructor?.name + '), expected (Element)');
+	checkel(el, 'element');
 	el.after(...el.childNodes);
 	el.remove()
 };
@@ -19,18 +21,37 @@ export var getContainer = () => { //get nearest parent with contenteditable in s
 		if (curNode === document.body) return;
 		curNode = curNode.parentElement
 	}
+	
 	return curNode
 };
 
-export var splitEl = (el, offsetEl, offsetPar) => {//split element at offset and appened them to a clone and optinally append the cloned one to another element
-	if (!el?.nodeType) throw new TypeError('edit: element of type (' + el?.constructor?.name + '), expected (Element)');
-	var cloneEl = el.cloneNode(false), doclone = false;
-	[...el.childNodes].forEach(child => (doclone || (doclone = child === offsetEl)) && cloneEl.append(child));
+export var splitEl = (el, offsetEl, offsetPar) => {
+	checkel(el, 'element');
+	checknode(offsetEl, 'offset element');
+	if (offsetPar) checkel(offsetPar, 'offset parent');
+	
+	//split element at offset (include it in the clone
+	var cloneEl = el.cloneNode(false);
+	var children = Array.from(el.childNodes), doclone = false;
+	for (let i = 0; i < children.length; i++) {
+		let child = children[i];
+		if (doclone || child === offsetEl) {
+			doclone = true;
+			cloneEl.append(child)
+		}
+	}
+	
+	//prepend clone to offsetPar or after element
 	offsetPar ? offsetPar.prepend(cloneEl) : el.after(cloneEl);
+	
 	return cloneEl
 };
 
-export var getWrapped = (tag, fun) => {//get nearest parent having tagname in selection
+export var getWrapped = (tag, fun) => {
+	//get nearest parent having tagname in selection
+	checkstr(tag, 'tag');
+	if (fun) checkfn(fun, 'function');
+	
 	//get selection and container
 	var selection = getSelection();
 	if (!selection.rangeCount) return;

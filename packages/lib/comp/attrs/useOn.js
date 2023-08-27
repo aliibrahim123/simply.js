@@ -4,11 +4,14 @@ var useOnHandler = {
 	handle (comp, el, attrs) {
 		attrs.forEach(attr=>{
 			if (!attr.startsWith('on(')) return;
-			var arg, parenEnd = attr.indexOf(')'), methStart = attr.indexOf(':'); //parenthesis end, method start
+			
+			//split according to syntax: on(...events).modifiers:method:arg
+			var arg, parenEnd = attr.indexOf(')'), methodStart = attr.indexOf(':'); //parenthesis end
 			var events = attr.slice(attr.indexOf('(')+1, parenEnd).split(',');
-			var modifiers = attr.slice(parenEnd+1, methStart).split('.');
-			var method = attr.slice(methStart +1);
+			var modifiers = attr.slice(parenEnd+1, methodStart).split('.');
+			var method = attr.slice(methodStart +1);
 			if (method.includes(':')) [method, arg] = method.split(':');
+			
 			if (!this.methods[method]) throw new CompError('on:attrs: undefined method (' + method + ')');
 			this.methods[method](comp, el, el.getAttribute(attr), events, attr, modifiers, arg ? arg.replace(/--./, (i)=>i[2].toUpperCase()) : undefined);
 		})

@@ -30,12 +30,21 @@ var scripts = [
 	'com/reactive.js',
 	'com/promise.g.js',
 	'com/promise.js',
+	'com/structure/events.g.js',
+	'com/structure/events.js',
 	'com/timing.g.js',
 	'com/timing.js',
 	'dom/base.js',
+	'dom/base.g.js',
+	'dom/els.js',
+	'dom/els.g.js',
 	'dom/chain.js',
+	'dom/chain.g.js',
+	'dom/router.js',
+	'dom/router.g.js',
 	'dom/edit.js',
 	'comp/base.js',
+	'comp/router.js',
 	'cli/base.g.js',
 	'cli/base.js',
 	'cli/ansi.g.js',
@@ -76,7 +85,7 @@ esbuild.build({
 		'node:readline/promises',
 		
 		//inner dependencies
-		
+		'./lib/src/comp/base.js'
 	],
 	outdir: 'lib/dist'
 }).then(result => esbuild.analyzeMetafile(result.metafile)).then(result => console.log(result))

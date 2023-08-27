@@ -25,23 +25,35 @@ var handlers = {
 		var proparg = obj.prop.map(i=>comp.get(i));
 		obj.conds.some(i => i.condF(comp, obj.el, ...proparg) && (comp.call(i.fun, obj.el, true, ...i.args) || true))
 	},
-	for (obj, val, comp,_, prop,__,meta) {//array looping
+	for (obj, val, comp,_, prop,__,meta) {
 		var { el, collection } = obj;
+		
+		//create collection
 		if (obj.mtype === 'collection' && !obj.collection) obj.collection = new $comp.CompCollection([], obj.args[0]);
 		
-		if (!meta.arr) { //no array
+		//case no array
+		if (!meta.arr) { 
 			el.replaceChildren(...obj.onemptyEls)
 			if (prop) prop.meta['arr:old'] = undefined;
 			
-		} else if (meta['arr:empty']) {//empty array
+		} 
+		
+		//case empty array
+		else if (meta['arr:empty']) {
 			el.replaceChildren(...obj.onemptyEls);
-			if (obj.mtype === 'collection') collection.remove(0, obj.collection.comps.length) //remove all components in collection
+			//remove all components in collection
+			if (obj.mtype === 'collection') collection.remove(0, obj.collection.comps.length) 
 			
-		} else if (meta['arr:wasempty']) {//was empty
+		} 
+		
+		//case if was empty
+		else if (meta['arr:wasempty']) {
 			el.replaceChildren();
 			val.forEach((i, ind)=> handleCreate(comp, obj, i, ind, prop))
 			
-		} else {
+		} 
+		
+		else {
 			meta['arr:patch'].forEach(i=> {
 				if (i.type === 'add') i.values.forEach((v, ind) => handleCreate(comp, obj, v, i.ind + ind, prop));
 				if (i.type === 'delete') {

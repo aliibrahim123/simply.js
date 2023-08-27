@@ -1,320 +1,491 @@
 //chained dom operation
 
 import $el from './base.js';
+import { checkstr, checkfn, checkint, checkel } from './check.js';
 
-class CDom {
-	constructor (sel, root){
-		this.els = $el(sel, root);
-		if (this.els.length === 0) console.warn('cdom: empty chained dom')
+export class ChainedDom {
+	constructor (a, b, c) {
+		this.elements = $el(a, b, c);
 	}
+	
 	static extend (obj) {
-		Object.assign(this.prototype, obj)
+		Object.assign(ChainedDom.prototype, obj)
 	}
-	elEach (fn) {
-		this.els.forEach(fn);
-		return this
-	}
-	each (fn) {
-		this.els.forEach((el,i,arr) => fn(new CDom(el), i, arr));
-		return this
-	}
+	
 	add (sel) {
-		var el = $el(sel);
-		this.els.push(...el);
+		this.elements.push(...$el(sel));
 		return this
 	}
-	get cloneSelf () {
-		return new CDom([...this.els])
+	
+	without (sel) {
+		checkstr(sel, 'selector');
+		this.elements = this.elements.filter(
+			el => !el.matches(sel)
+		);
+		return this
 	}
-	get cloneEls () {
-		return new CDom([...this.els.map(el => el.cloneNode(true))])
+	
+	each (fn) {
+		checkfn(fn, 'fn');
+		this.elements.forEach((el, i) => fn(new ChainedDom(el), i, this));
+		return this
 	}
-	get first () {
-		return new CDom([this.els[0]])
+	eachEl (fn) {
+		checkfn(fn, 'fn');
+		this.elements.forEach(fn);
+		return this
 	}
-	get last () {
-		return new CDom([this.els[this.els.length-1]])
-	}
-	get (index) {
-		return new CDom(this.els[index])
-	}
+	
 	map (fn) {
-		return new CDom(this.els.map(fn))
+		checkfn(fn, 'mapper');
+		return new ChainedDom(this.elements.map(fn))
 	}
 	filter (fn) {
-		return new CDom(this.els.filter(fn))
+		checkfn(fn, 'predicate');
+		return new ChainedDom(this.elements.filter(fn))
 	}
+	
+	get cloned () {
+		return new ChainedDom(this.elements.concat())
+	}
+	get cloneElements () {
+		return new ChainedDom(this.elements.map(
+			el => el.cloneNode(true)
+		));
+	}
+	
 	slice (start, end) {
-		return new CDom(this.els.slice(start, end))
+		checkint(start, 'start');
+		checkint(end, 'end');
+		return new ChainedDom(this.elements.slice(start, end))
 	}
-	until (fn) {//loop until a condition is met
-		var cond = true;
-		return new CDom(this.els.filter(
-			(el, i, a) => cond && (cond = !fn(el, i, a))
+	
+	get first () {
+		return new ChainedDom(this.elements[0] || [])
+	}
+	get last () {
+		return new ChainedDom(this.elements[this.elements.length -1] || [])
+	}
+	at (ind) {
+		checkint(ind, 'index');
+		return new ChainedDom(this.elements[ind] || [])
+	}
+	
+	find (sel) {
+		checkstr(sel, 'selector');
+		return new ChainedDom(this.elements.filter(
+			el => el.matches(sel)
 		))
 	}
-	untilRev (fn) {//until but reversed
-		return this.until.call({els: this.els.reverse()}, fn)
-	}
-	find (sel) {
-		return new CDom(this.els.filter(el => el.matches(sel)))
-	}
-	removeByArr (arr) {//remove array of elemets
-		return new CDom(this.els.filter(el => !arr.includes(el)))
-	}
-	removeBySel (sel) {//remove by selector
-		this.els = this.els.filter(el => !el.matches(sel) || el.remove());
-		return this
-	}
 	has (sel) {
-		return this.els.some(el => el.matches(sel))
+		checkstr(sel, 'selector');
+		return this.elements.some(el => el.matches(sel));
 	}
 	all (sel) {
-		return this.els.every(el => el.matches(sel))
+		checkstr(sel, 'selector');
+		return this.elements.every(el => el.matches(sel));
 	}
-	index (sel) {
-		return this.els.findIndex(el => el.matches(sel))
-	}
-	closest (sel) {
-		return new CDom(this.els[0].closest(sel))
-	}
-	clean () {//filter elements not in document
-		this.els = this.els.filter(el => document.body.contains(el));
-		return this
-	}
-	get isInDom () {
-		return document.body.contains(this.els[0])
-	}
-	get reverse () {
-		return new CDom(this.els.reverse())
+	indexOf (sel) {
+		checkstr(sel, 'selector');
+		return this.elements.findIndex(el => el.matches(sel));
 	}
 	select (sel) {
-		return new CDom(this.els[0].querySelectorAll(sel))
+		checkstr(sel, 'selector');
+		if (!this.elements[0]) return new CainedDom([]);
+		return new ChainedDom(this.elements[0].querySelectorAll(sel))
 	}
+	
+	get uniq () {
+		return new ChainedDom(Array.from(new Set(this.elements)))
+	}
+	get cleaned () {
+		return new ChainedDom(this.elements.filter(
+			el => document.contains(el)
+		))
+	}
+	get reversed () {
+		return new ChainedDom(this.elements.concat().reverse())
+	}
+	
+	get isInDom () {
+		if (!this.elements[0]) return;
+		return document.contains(this.elements[0])
+	}
+	get isEmpty () {
+		if (!this.elements[0]) return;
+		return this.elements[0].childNodes.length === 0
+	}
+	get isHidden () {
+		if (!this.elements[0]) return;
+		return this.elements[0].style.display === 'none'
+	}
+	
 	get parent () {
-		return new CDom(this.els[0].parentElement)
+		return new ChainedDom(this.elements[0]?.parentElement || [])
 	}
 	get parents () {
-		var els = [], curEl = this.els[0].parentNode;
+		var els = [], curEl = this.elements[0]?.parentNode;
 		while (curEl) {
 			els.push(curEl);
 			curEl = curEl.parentElement
 		}
-		return new CDom(els)
+		return new ChainedDom(els)
 	}
+	
 	get children () {
-		return new CDom(this.els[0].children)
+		return new ChainedDom(this.elements[0]?.children || [])
 	}
 	get content () {
-		return new CDom(this.els[0].childNodes)
+		return new ChainedDom(this.elements[0]?.childNodes || [])
 	}
+	
 	get next () {
-		return new CDom(this.els[0].nextElementSibling)
+		return new ChainedDom(this.elements[0]?.nextElementSibling || [])
 	}
 	get prev () {
-		return new CDom(this.els[0].previousElementSibling)
+		return new ChainedDom(this.elements[0]?.previousElementSibling || [])
 	}
 	get siblings () {
-		return (new CDom(this.els[0].parentElement?.children)).filter(el => el !== this.els[0])
+		return new ChainedDom(
+			Array.from(this.elements[0]?.parentElement?.children || [])
+			  .filter(el => el !== this.elements[0])
+		)
 	}
 	get nextSiblings () {
-		var els = [], curEl = this.els[0].nextElementSibling;
+		var els = [], curEl = this.elements[0]?.nextElementSibling;
 		while (curEl) {
 			els.push(curEl);
 			curEl = curEl.nextElementSibling
 		}
-		return new CDom(els)
+		return new ChainedDom(els)
 	}
 	get prevSiblings () {
-		var els = [], curEl = this.els[0].previousElementSibling;
+		var els = [], curEl = this.elements[0]?.previousElementSibling;
 		while (curEl) {
 			els.push(curEl);
 			curEl = curEl.previousElementSibling
 		}
-		return new CDom(els)
+		return new ChainedDom(els)
 	}
+	
 	html (str) {
-		if (str) this.elEach(el => el.innerHTML = str);
-		else return this.els[0].innerHTML;
-		return this
-	}
-	text (str) {
-		if (str) this.elEach(el => el.innerText = str);
-		else return this.els[0].innerText;
-		return this
-	}
-	addClass (classname) {
-		this.elEach(el => el.classList.add(classname));
-		return this
-	}
-	removeClass (classname) {
-		this.elEach(el => el.classList.remove(classname));
-		return this
-	}
-	toggleClass (classname) {
-		this.elEach(el => el.classList.toggle(classname));
-		return this
-	}
-	hasClass (classname) {
-		return this.els[0].classList.contains(classname)
-	}
-	attr (name, value) {
-		if (typeof name === 'string') {
-			if (value !== undefined) {
-				if (value === null) this.elEach(el => el.removeAttribute(name));
-				else this.elEach(el => el.setAttribute(name, value));
-			} else {
-				return this.els[0].getAttribute(name)
-			}
-		} else if (name) {
-			for (let attr in name) {
-				this.elEach(el => el.setAttribute(attr, name[attr]))
-			}
-		} else {
-			return Object.fromEntries(Array.from(this.els[0].attributes).map(i=> [i.name, i.value])) //return attributes of first as object
-		}
-		return this
-	}
-	prop (name, value) {
-		if (typeof name === 'string') {
-			if (value !== undefined) this.elEach(el => el[name] = value);
-			else return this.els[0][name]
-		} else {
-			for (let key in name) {
-				this.elEach(el => el[key] = name[key])
-			}
-		}
-		return this
-	}
-	call (prop, ...args) {
-		this.elEach(el => el[prop](...args)); 
-		return this
-	}
-	callr (prop, ...args) {
-		return this.els.map(el => el[prop](...args))
-	}
-	css (name, value) {
-		if (typeof name === 'string') {
-			if (value) this.elEach(el => el.style.setProperty(name, value))
-			else return this.els[0].style.getPropertyValue(name)
-		} else if (name) {
-			for (let key in name) {
-				this.elEach(el => el.style.setProperty(key, name[key]))
-			}
-		} else {
-			var sty = this.els[0].style;
-			return Object.fromEntries(Array.from(sty).map(i => {return [i, sty.getPropertyValue(i)]})) //return all styles as object
-		}
-		return this
-	}
-	data (name, value) {
-		if (typeof name === 'string') {
-			if (value) this.elEach(el => el.dataset[name] = value);
-			else return this.els[0].dataset[name]
-		} else if (name) {
-			this.elEach(el => Object.assign(el.dataset, name))
-		} else {
-			return {...this.els[0].dataset}
-		}
-		return this
-	}
-	removeData (name) {
-		this.elEach(el => delete el.dataset[name]);
+		//get
+		if (str === undefined) return this.elements[0]?.innerHTML;
+		
+		//set
+		checkstr(str, 'html string');
+		this.elements.forEach(el => el.innerHTML = str);
+		
 		return this
 	}
 	empty () {
-		this.elEach(el => el.innerHTML = ''); 
+		this.elements.forEach(el => el.innerHTML = ''); 
 		return this
 	}
-	append (el) {
+	text (str) {
+		//get
+		if (str === undefined) return this.elements[0]?.innerText; 
+		
+		//set
+		checkstr(str, 'text string');
+		this.elements.forEach(el => el.innerText = str);
+		
+		return this
+	}
+	
+	addClass (name) {
+		//case multiple
+		if (Array.isArray(name)) this.elements.forEach(
+			el => el.className += name.join(' ')
+		);
+		
+		//case single
+		else {
+			checkstr(name, 'class name');
+			this.elements.forEach(el => el.classList.add(name))
+		}
+		
+		return this
+	}
+	removeClass (name) {
+		//case multiple
+		if (Array.isArray(name)) name.forEach(name => this.removeClass(name));
+		
+		//case single
+		else {
+			checkstr(name, 'class name');
+			this.elements.forEach(el => el.classList.remove(name))
+		}
+		
+		return this
+	}
+	toggleClass (name) {
+		checkstr(name, 'class name');
+		this.elements.forEach(el => el.classList.toggle(name));
+		return this
+	}
+	hasClass (name) {
+		checkstr(name, 'class name');
+		return this.elements[0]?.classList?.contains?.(name)
+	}
+	
+	attr (name, value) {
+		//case single
+		if (typeof name === 'string') {
+			//get
+			if (value === undefined) return this.elements[0]?.getAttribute?.(name);
+			
+			//remove
+			if (value === null) this.elements.forEach(el => el.removeAttribute(name));
+			
+			//set
+			else this.elements.forEach(el => el.setAttribute(name, value));
+		}
+		
+		//case multiple
+		else if (name) {
+			for (let attr in name) {
+				this.elements.forEach(el => el.setAttribute(attr, name[attr]))
+			}
+		}
+		
+		//case get all
+		else {
+			return Array.from(this.elements[0]?.attributes || [])
+			  .reduce((obj, attr) => {
+				  obj[attr.name] = attr.value;
+				  return obj
+			  }, {})
+		}
+		
+		return this
+	}
+	
+	prop (name, value) {
+		//case single
+		if (typeof name === 'string') {
+			//case get
+			if (value === undefined) return this.elements[0]?.[name];
+			
+			//case set
+			this.elements.forEach(el => el[name] = value)
+		} 
+		
+		//case multiple
+		else {
+			for (let key in name) {
+				this.elements.forEach(el => el[key] = name[key])
+			}
+		}
+		
+		return this
+	}
+	
+	call (prop, ...args) {
+		checkstr(prop, 'prop');
+		this.elements.forEach(el => el[prop](...args));
+		return this
+	}
+	callr (prop, ...args) {
+		checkstr(prop, 'prop');
+		return this.elements.map(el => el[prop](...args));
+	}
+	
+	css (name, value) {
+		//case single
+		if (typeof name === 'string') {
+			//case get
+			if (value === undefined) return this.elements[0]?.style?.getPropertyValue?.(name)
+			
+			//case set
+			this.elements.forEach(el => el.style.setProperty(name, value));
+			
+		} 
+		
+		//case multiple
+		else if (name) {
+			for (let prop in name) {
+				this.elements.forEach(el => el.style.setProperty(prop, name[prop]))
+			}
+		}
+		
+		//case get all
+		else {
+			let style = this.elements[0]?.style
+			return Array.from(style || [])
+			  .reduce((obj, prop) => {
+				  obj[prop] = style.getPropertyValue(prop);
+				  return obj
+			  }, {})
+		}
+		
+		return this
+	}
+	
+	data (name, value) {
+		//case single
+		if (typeof name === 'string') {
+			//case get
+			if (value === undefined) return this.elements[0]?.dataset?.[name];
+			
+			//case remove
+			if (value === null) this.elements.forEach(el => delete el.dataset[name]);
+			
+			//case set
+			else this.elements.forEach(el => el.dataset[name] = value);
+			
+		} 
+		
+		//case multiple
+		else if (name) {
+			for (let key in name) {
+				this.elements.forEach(el => el.dataset[name[key]] = name[key])
+			}
+		}
+		
+		//case get all
+		else return { ...this.elements[0]?.dataset }
+		
+		return this
+	}
+	
+	append (el, clone = true) {
+		var nodes = $el(el);
+		if (clone) this.elements.forEach(
+			el => el.append(...nodes.map(el => el.cloneNode(true)))
+		);
+		else this.elements[0]?.append?.(...nodes);
+		return this
+	}
+	prepend (el, clone = true) {
 		var node = $el(el);
-		this.elEach(el => el.append(...node.map(el => el.cloneNode(true))));
+		if (clone) this.elements.forEach(
+			el => el.prepend(...node.map(el => el.cloneNode(true)))
+		);
+		else this.elements[0]?.prepend?.(...nodes);
 		return this
 	}
-	prepend (el) {
+	before (el, clone = true) {
 		var node = $el(el);
-		this.elEach(el => el.prepend(...node.map(el => el.cloneNode(true))));
+		if (clone) this.elements.forEach(
+			el => el.before(...node.map(el => el.cloneNode(true)))
+		);
+		else this.elements[0]?.before?.(...nodes);
 		return this
 	}
-	before (el) {
+	after (el, clone = true) {
 		var node = $el(el);
-		this.elEach(el => el.before(...node.map(el => el.cloneNode(true))));
+		if (clone) this.elements.forEach(
+			el => el.after(...node.map(el => el.cloneNode(true)))
+		);
+		else this.elements[0]?.after?.(...nodes);
 		return this
 	}
-	after (el) {
-		var node = $el(el);
-		this.elEach(el => el.after(...node.map(el => el.cloneNode(true))));
-		return this
-	}
+	
 	appendTo (el) {
-		el.append(...this.els);
+		checkel(el, 'destination');
+		el.append(...this.elements);
 		return this
 	}
 	prependTo (el) {
-		el.prepend(...this.els);
+		checkel(el, 'destination');
+		el.prepend(...this.elements);
 		return this
 	}
 	insertBefore (el) {
-		el.before(...this.els);
+		checkel(el, 'destination');
+		el.before(...this.elements);
 		return this
 	}
 	insertAfter (el) {
-		el.after(...this.els);
+		checkel(el, 'destination');
+		el.after(...this.elements);
 		return this
 	}
-	replaceWith (el) {
+	
+	replaceWith (el, clone = true) {
 		var node = $el(el);
-		this.elEach(el => el.replaceWith(...node.map(el => el.cloneNode(true))));
+		if (clone) this.elements.forEach(
+			el => el.replaceWith(...node.map(el => el.cloneNode(true)))
+		);
+		else this.elements[0]?.replaceWith?.(...node);
 		return this
 	}
-	on (...args) {
-		this.elEach(el => el.addEventListener(...args));
+	
+	on (type, fn, options) {
+		checkstr(type, 'type');
+		checkfn(fn, 'listner');
+		this.elements.forEach(
+			el => el.addEventListener(type, fn, options)
+		);
 		return this
 	}
-	off (...args) {
-		this.elEach(el => el.removeEventListener(...args));
+	off (type, fn, options) {
+		checkstr(type, 'type');
+		checkfn(fn, 'listner');
+		this.elements.forEach(
+			el => el.removeEventListener(type, fn, options)
+		);
 		return this
 	}
-	once (type, fn, options = {}) {
-		this.elEach(el => el.addEventListener(type, fn, {once: true, ...options}));
+	once (type, fn, options) {
+		checkstr(type, 'type');
+		checkfn(fn, 'listner');
+		this.elements.forEach(
+			el => el.addEventListener(type, fn, { once: true, ...options })
+		);
 		return this
 	}
 	trigger (type, opts ={}) {
 		var event = typeof type === 'string' ? new Event(type, opts) : type;
-		this.elEach(el => el.dispatchEvent(event));
+		this.elements.forEach(el => el.dispatchEvent(event));
 		return this
 	}
+	
 	get position () {
-		return this.els[0].getBoundingClientRect()
+		return this.elements[0]?.getBoundingClientRect?.()
 	}
+	
 	scrollInto (opts) {
-		this.els[0].scrollIntoView(opts);
+		this.elements[0]?.scrollIntoView?.(opts);
 		return this
 	}
-	animate (...args) {//return promise
-		return this.els[0].animate(...args)
+	
+	animate (...args) {
+		return this.elements[0]?.animate?.(...args)
 	}
 	animateAll (...args) {
-		this.elEach(el => el.animate(...args));
+		this.elements.forEach(el => el.animate(...args));
 		return this
 	}
+	
+	
 	hide () {
-		this.elEach(el => el.style.display = 'none');
+		this.elements.forEach(
+			el => el.style.display = 'none'
+		);
 		return this
 	}
 	show () {
-		this.elEach(el => el.style.display = 'initial');
+		this.elements.forEach(
+			el => el.style.display = ''
+		);
 		return this
 	}
 	toggle () {
-		this.elEach(el => el.style.display = el.style.display === 'none' ? 'initial' : 'none');
+		this.elements.forEach(
+			el => el.style.display = el.style.display === 'none' ? '' : 'none'
+		);
 		return this
 	}
+	
 	wrapEach (el) {
 		var node = $el(el)[0];
-		this.elEach(el => {
+		this.elements.forEach(el => {
 			var sibl = el.previousElementSibling;
 			var par = node.cloneNode(true);
+			
+			//handle hierarchy
 			if (sibl) sibl.after(par);
 			else if (el.parentNode) el.parentNode.append(par)
 			par.append(el);
@@ -323,19 +494,15 @@ class CDom {
 	}
 	wrapAll (el) {
 		var node = $el(el)[0];
-		node.append(...this.els);
+		node.append(...this.elements);
 		return this
 	}
 	unwrap () {
-		this.elEach(el => el.parentNode ? el.parentNode.after(el) : undefined);
+		this.elements.forEach(
+			el => el.parentNode ? el.parentNode.after(el) : undefined
+		);
 		return this
 	}
 }
 
-$el.chain = (sel, root = document) => {
-	return sel ? new CDom(sel, root) : (sel) => new CDom(sel, root)
-};
-
-globalThis.CDom = CDom;
-
-export { $el, CDom }
+export default (a, b, c) => new ChainedDom(a, b, c);

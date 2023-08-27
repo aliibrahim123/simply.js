@@ -71,13 +71,21 @@ class View {
 		return $el(a, root)
 	}
 	render () {
-		var temp = this.opts.temp, el = this.el, tels /* template elements */, acts = [], appendM = this.opts.tempAppendMode;
+		var temp = this.opts.temp, el = this.el, tels, // template elements 
+		  acts = [], appendM = this.opts.tempAppendMode;
 		
 		//construct template 
 		if (typeof temp === 'string') {
-			if (temp[0] === '<') tels =  this.$(temp); //construct from html string
-			else ({els: tels, acts = []} = $comp.temps.get(temp)(this)); //get from template manager
-		} else if (temp.nodeType === 1) tels = temp.cloneNode(true).childNodes; //clone from node
+			//construct from html string
+			if (temp[0] === '<') tels =  this.$(temp); 
+			
+			//get from template manager
+			else ({els: tels, acts = []} = $comp.temps.get(temp)(this)); 
+		} 
+		
+		//clone from node
+		else if (temp.nodeType === 1) tels = temp.cloneNode(true).childNodes; 
+		
 		else ({els: tels = '', acts = []} = temp(this));
 		
 		//append it
@@ -91,7 +99,7 @@ class View {
 		this.comp.trigger('render', this);
 		return this
 	}
-	walk (el, forceNS = []) {//walk 
+	walk (el, forceNS = []) { 
 		$comp.attrs.walk(this.comp, el, forceNS);
 		return this
 	}
@@ -108,12 +116,16 @@ class View {
 		checkstr(name, 'name', 'view');
 		var els = this.$(el);
 		
-		if (val === undefined) { //get
+		//get
+		if (val === undefined) { 
 			if (name in this.attrs) return this.attrs[name](els[0]);
 			else if (name in els[0]) return els[0][name];
 			else return els[0].getAttribute(name)
 			
-		} else {els.forEach(el => { //set
+		} 
+		
+		//set
+		else {els.forEach(el => { 
 			if (name in this.attrs) this.attrs[name](el, val);
 			else if (name in el) el[name] = val;
 			else el.setAttribute(name, val)
@@ -135,7 +147,8 @@ class View {
 			//construct element
 			if (sub.$isSub) ({el: subel, acts} = sub.fn(el, this, true, ...args)); //call if sub
 			else subel = sub[0].cloneNode(true); //clone else
-			subel.$isSub = true; //mark element as sub element
+			//mark element as sub element
+			subel.$isSub = true; 
 			
 			//append it
 			if (ind === -1 || ind === el.children.length) el.append(subel); 

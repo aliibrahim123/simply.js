@@ -57,14 +57,14 @@ export var copiers = {//copiers handler per type
 		if (opts.refs) cache.set(obj, clone);
 		return clone
 	},
-	Generator (obj, opts, cache) {
-		if (!opts.function) return obj
-		var clone = function* (...args) {
+	AsyncFunction (obj, opts, cache) {
+		var clone = async function(...args) {
 			return obj.call(this, ...args)
 		};
 		if (opts.refs) cache.set(obj, clone);
 		return clone
 	},
+	
 	Date (obj) {
 		return new Date(obj)
 	},

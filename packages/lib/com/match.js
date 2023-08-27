@@ -3,7 +3,7 @@
 import { 
 	isOfType, isInstanceOf, isStringP, isString, isNumberP, isNumber, isBooleanP, isBoolean, isBigIntP, isBigInt, isSymbol, 
 	isPrimitive, isNull, isUndefined, isNill, isDefined, isTruthy, isFalsy, isTrue, isFalse, isObject, isPlainObject, isArray,
-	isArrayLike, isSafeArrayLike, isArrayBuffer, isTypedArray, isDataView, isBlob, isDate, isRegExp, isInteger, isNaN, isFinite,
+	isArrayLike, isSafeArrayLike, isArrayBuffer, isDataView, isBlob, isDate, isRegExp, isInteger, isNaN, isFinite,
 	isSafeInteger, isFunction, isPromise, isConstructor, isError, isMap, isSet, isWeakMap, isWeakSet, isEmpty, isInt8, isInt16,
 	isInt32, isUint8, isUint16, isUint32, isNative 
 } from './is.js';
@@ -24,7 +24,7 @@ export default {
 	startsWith, endsWith, matchString,
 	isOfType, isInstanceOf, isStringP, isString, isNumberP, isNumber, isBooleanP, isBoolean, isBigIntP, isBigInt, isSymbol, 
 	isPrimitive, isNull, isUndefined, isNill, isDefined, isTruthy, isFalsy, isTrue, isFalse, isObject, isPlainObject, isArray,
-	isArrayLike, isSafeArrayLike, isArrayBuffer, isTypedArray, isDataView, isBlob, isDate, isRegExp, isInteger, isNaN, isFinite,
+	isArrayLike, isSafeArrayLike, isArrayBuffer, isDataView, isBlob, isDate, isRegExp, isInteger, isNaN, isFinite,
 	isSafeInteger, isFunction, isPromise, isConstructor, isError, isMap, isSet, isWeakMap, isWeakSet, isEmpty, isInt8, isInt16,
 	isInt32, isUint8, isUint16, isUint32, isNative 
 };
@@ -38,7 +38,7 @@ export {
 	ofLength, includes, firstOf, lastOf, every, some,
 	isOfType, isInstanceOf, isStringP, isString, isNumberP, isNumber, isBooleanP, isBoolean, isBigIntP, isBigInt, isSymbol, 
 	isPrimitive, isNull, isUndefined, isNill, isDefined, isTruthy, isFalsy, isTrue, isFalse, isObject, isPlainObject, isArray,
-	isArrayLike, isSafeArrayLike, isArrayBuffer, isTypedArray, isDataView, isBlob, isDate, isRegExp, isInteger, isNaN, isFinite,
+	isArrayLike, isSafeArrayLike, isArrayBuffer, isDataView, isBlob, isDate, isRegExp, isInteger, isNaN, isFinite,
 	isSafeInteger, isFunction, isPromise, isConstructor, isError, isMap, isSet, isWeakMap, isWeakSet, isEmpty, isInt8, isInt16,
 	isInt32, isUint8, isUint16, isUint32, isNative 
 }

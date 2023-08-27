@@ -10,22 +10,22 @@ var format = (str = false, start, end) => {
 }
 
 //text modifiers
-export var bold 		 = (str = false) => format(str,  1, 22);
-export var dim 			 = (str = false) => format(str,  2, 22);
-export var italic 		 = (str = false) => format(str,  3, 23);
-export var underline 	 = (str = false) => format(str,  4, 24);
-export var overline 	 = (str = false) => format(str, 53, 55);
-export var inverse 		 = (str = false) => format(str,  7, 27);
-export var hidden 		 = (str = false) => format(str,  8, 28);
+export var bold          = (str = false) => format(str,  1, 22);
+export var dim           = (str = false) => format(str,  2, 22);
+export var italic        = (str = false) => format(str,  3, 23);
+export var underline     = (str = false) => format(str,  4, 24);
+export var overline      = (str = false) => format(str, 53, 55);
+export var inverse       = (str = false) => format(str,  7, 27);
+export var hidden        = (str = false) => format(str,  8, 28);
 export var strikethrough = (str = false) => format(str,  9, 29);
 
-export var noBold = 		 '\x1b[22m';
-export var noDim = 			 '\x1b[22m';
-export var noItalic = 		 '\x1b[23m';
-export var noUnderline = 	 '\x1b[24m';
-export var noOverline = 	 '\x1b[55m';
-export var noInverse = 		 '\x1b[27m';
-export var noHidden = 		 '\x1b[28m';
+export var noBold =          '\x1b[22m';
+export var noDim =           '\x1b[22m';
+export var noItalic =        '\x1b[23m';
+export var noUnderline =     '\x1b[24m';
+export var noOverline =      '\x1b[55m';
+export var noInverse =       '\x1b[27m';
+export var noHidden =        '\x1b[28m';
 export var noStrikethrough = '\x1b[29m';
 
 //forground colors
@@ -41,12 +41,12 @@ export var cyan    = (str = false) => format(str, 36, 39);
 export var white   = (str = false) => format(str, 37, 39);
 
 export var blackBright   = (str = false) => format(str, 90, 39);
-export var redBright 	 = (str = false) => format(str, 91, 39);
+export var redBright     = (str = false) => format(str, 91, 39);
 export var greenBright   = (str = false) => format(str, 92, 39);
 export var yellowBright  = (str = false) => format(str, 93, 39);
-export var blueBright 	 = (str = false) => format(str, 94, 39);
+export var blueBright    = (str = false) => format(str, 94, 39);
 export var magentaBright = (str = false) => format(str, 95, 39);
-export var cyanBright 	 = (str = false) => format(str, 96, 39);
+export var cyanBright    = (str = false) => format(str, 96, 39);
 export var whiteBright   = (str = false) => format(str, 97, 39);
 
 export var ansi256 = (index, str = false) => {
