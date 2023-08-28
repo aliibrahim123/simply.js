@@ -3,6 +3,16 @@
 import { execSync } from 'node:child_process';
 import * as esbuild from 'esbuild';
 
+//in comp/..., the path to base.js is replaced with '../src/comp/base.js'
+var fixCompPath = {
+	name: 'fix-comp-path',
+	setup(build) {
+		build.onResolve({ filter: /^\.\.\/comp\/base\.js$/ }, args => {
+			return { path: args.path, external: true }
+		})
+	},
+}
+
 var scripts = [
 	'com/diff.g.js',
 	'com/diff.js',
@@ -87,5 +97,6 @@ esbuild.build({
 		//inner dependencies
 		'./lib/src/comp/base.js'
 	],
-	outdir: 'lib/dist'
+	outdir: 'lib/dist',
+	plugins: [fixCompPath]
 }).then(result => esbuild.analyzeMetafile(result.metafile)).then(result => console.log(result))
