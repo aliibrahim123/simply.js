@@ -32,6 +32,9 @@ var startUpdate = async (router, events, opts, url) => {
 	var page = await response.text();
 	page = (new DOMParser()).parseFromString(page, 'text/html');
 	
+	//update history when required (not in back/forward)
+	if (url !== location) history.pushState(history.state, document.title, url.href);
+	
 	//handle update
 	if (opts.transitions && document.startViewTransition) document.startViewTransition(() => handleUpdate(router, page, events, url));
 	else handleUpdate(router, page, events, url)
@@ -40,16 +43,13 @@ var startUpdate = async (router, events, opts, url) => {
 var handleUpdate = (router, page, events, url) => {
 	events.trigger('before-update', router, page, url);
 	
-	//update history when required (not in back/forward)
-	if (url !== location) history.pushState(history.state, document.title, url.href);
-	
 	//handle head
 	handleHead(page);
 	
 	//replace body
 	//handle preserved nodes
-	query('[preserve-on-route]').forEach(
-		el => query('[preserve-on-route][id=' + el.id + ']', page)[0]?.replaceWith?.(el)
+	query('[preserve-on-route]', document.body).forEach(
+		el => query('[preserve-on-route][id=' + el.id + ']', page.body)[0]?.replaceWith?.(el)
 	);
 	document.body.replaceChildren(...page.body.childNodes);
 	
@@ -98,7 +98,7 @@ var clone = (el) => {
 
 var handleHead = (page) => {
 	//base element: remove if added before then prepend if specified
-	//script / link elements: add if not added before
+	//script and preserve-on-route elements: add if not added before
 	//other elements: remove old then add new
 	var head = document.head;
 	
@@ -115,14 +115,17 @@ var handleHead = (page) => {
 		if (tag === 'BASE') return;
 		
 		//if script/link, walk through news and append if not added before
-		if (tag === 'SCRIPT' || tag === 'LINK') return newHeadEls[tag].forEach(
-			nEl => !oldHeadEls[tag].some(oEl => oEl.id === nEl.id) && head.append(clone(nEl))
+		if (tag === 'SCRIPT') return newHeadEls.SCRIPT.forEach(
+			nEl => !oldHeadEls.SCRIPT.some(oEl => oEl.id === nEl.id) && head.append(clone(nEl))
 		);
 		
 		//remove old elements
-		if (oldHeadEls[tag]) oldHeadEls[tag].forEach(el => el.remove());
+		if (oldHeadEls[tag]) oldHeadEls[tag].forEach(el => !el.hasAttribute('preserve-on-route') && el.remove());
 		
 		//add new elements
-		if (newHeadEls[tag]) newHeadEls[tag].forEach(el => head.append(el));
+		if (newHeadEls[tag]) newHeadEls[tag].forEach(el => {
+			if (el.hasAttribute('preserve-on-route') && oldHeadEls[tag]?.some?.(oEl => oEl.id === el.id)) return;
+			head.append(el)
+		});
 	})
 }

@@ -49,7 +49,7 @@ var func = {
 				super.init()
 			}
 			static funs = {...superClass.funs}
-			static defaults ={...superClass.defaults}
+			static defaults = {...superClass.defaults}
 		}
 		this.currentClass = cclass;
 		
