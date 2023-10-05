@@ -33,22 +33,11 @@ var func = {
 	},
 	
 	currentClass: null,
-	createComp (createFn, initFn, superClass = Comp) {
+	createComp (createFn, superClass = Comp) {
 		checkfn(createFn, 'createFn', 'functional');
-		checkfn(initFn, 'initFn', 'functional');
 		checkCompClass(superClass, 'superClass', 'functional');
 		
 		var cclass = class FComp extends superClass {
-			init () {
-				func.push(this);
-				
-				var data = initFn();
-				if (data) this.set(data);
-				
-				func.pop();
-				super.init()
-			}
-			static funs = {...superClass.funs}
 			static defaults = {...superClass.defaults}
 		}
 		this.currentClass = cclass;
@@ -70,6 +59,9 @@ var func = {
 	setFun (name, fn) {
 		this.useClass().funs[name] = this.enableFor(fn)
 	},
+	setSub (name, sub) {
+		this.useClass().defaults.view.subs[name] = sub
+	},
 
 	useComp () {
 		return this.getCur()
@@ -78,12 +70,11 @@ var func = {
 		return this.getCur().model.toProxy()
 	},
 	useState (prop, Default) {
-		var comp = this.getCur(), wasSet = false;
-		if (Default !== undefined && !comp.has(prop)) { 
-			comp.set(prop, Default);
-			wasSet = true;
-		}
-		var [value, Prop] = comp.model.getLow(prop);
+		var comp = this.getCur();
+		if (Default !== undefined && !comp.has(prop)) comp.set(prop, Default);
+		
+		var Prop = comp.model.get(prop, true);
+		var value = Prop.value;
 		
 		//[state, setState, getState, State]
 		return [
@@ -120,6 +111,9 @@ var func = {
 	},
 	use$ (...args) {
 		return this.getCur().view.$(...args)
+	},
+	useSub (name, ...args) {
+		return this.useComp().view.createSub(name, ...args)
 	},
 	useEl () {
 		return this.getCur().el

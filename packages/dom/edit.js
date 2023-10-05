@@ -215,6 +215,11 @@ var $edit = {
 		
 		return {success: true, type: 'remove-format'}
 	},
+	getSelectedElement () {
+		var selection = getSelection();
+		if (!selection.rangeCount) return;
+		selection.getRangeAt(0).commonAncestorContainer
+	} 
 	selectParagraph () {
 		//get selection
 		var selection = getSelection();
