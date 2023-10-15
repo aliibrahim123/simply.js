@@ -1,6 +1,6 @@
 {
 	"name": "@simplyjs/full",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "simple fast and powerful",
 	"scripts": {
 		"start": "http-server -o",
