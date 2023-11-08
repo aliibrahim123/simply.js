@@ -67,29 +67,17 @@ var func = {
 		return this.getCur()
 	},
 	useStore () {
-		return this.getCur().model.toProxy()
+		return this.getCur().model.toStore()
 	},
-	useState (prop, Default) {
-		var comp = this.getCur();
-		if (Default !== undefined && !comp.has(prop)) comp.set(prop, Default);
-		
-		var Prop = comp.model.get(prop, true);
-		var value = Prop.value;
-		
-		//[state, setState, getState, State]
-		return [
-			value,
-			(value) => comp.set(prop, value),
-			() => comp.get(prop),
-			Prop
-		]
+	useSignal (name, value) {
+		return this.getCur().createSignal(name, value)
+	},
+	useCSignal (name, depends, fn) {
+		return this.getCur().createCSignal(name, depends, fn)
 	},
 	
 	useEffect (prop, effect) {
 		this.getCur().addEffect(prop, typeof effect === 'string' ? effect : this.enableFor(effect))
-	},
-	useSignal (comp, obj) {
-		this.getCur().addSignal(comp, obj)
 	},
 
 	useEvent (event, fn) {

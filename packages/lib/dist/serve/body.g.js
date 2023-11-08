@@ -1,0 +1,1 @@
+var t=Object.defineProperty;var s=(r,o)=>t(r,"name",{value:o,configurable:!0});var e=s((r,o,a,l)=>{},"baseBody");globalThis.$serve?$serve.baseBody=e:globalThis.$serve={baseBody:e};var m=$serve;export{e as baseBody,m as default};

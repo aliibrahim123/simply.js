@@ -29,8 +29,8 @@ export var checkCompClass = (clas, name = 'component', system = 'comp') => {
 	if (!clas?.isCompClass) throw new CompError(`${system}: ${name} of type (${clas?.name || clas?.constructor?.name}), expected (@component)`);
 };
 
-export var checkDataProv = (provider, system) => {
-	if (!provider?.isDataProvider) throw new CompError(`${system}: provider of type (${provider?.constructor?.name}), expected (@DataProvider)`);
+export var checkDataProv = (provider, system, name) => {
+	if (!provider?.isDataProvider) throw new CompError(`${system}: ${name} of type (${provider?.constructor?.name}), expected (@DataProvider)`);
 };
 
 export { CompError };

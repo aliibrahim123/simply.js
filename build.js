@@ -76,7 +76,11 @@ var scripts = [
 	'debug/test.js',
 	'debug/test/load.js',
 	'debug/test/loggers/console.js',
-	'debug/test/inputters/cli.js'
+	'debug/test/inputters/cli.js',
+	'serve/base.js',
+	'serve/base.g.js',
+	'serve/body.js',
+	'serve/body.g.js'
 ];
 
 esbuild.build({

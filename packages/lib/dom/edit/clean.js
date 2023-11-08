@@ -14,7 +14,7 @@ export var clean = (el, tag, includeParent = true, fun, data = {}) => {
 	
 	//get elements
 	tag = tag.toLowerCase();
-	var els = [...el.getElementsByTagName(tag)];
+	var els = Array.from(el.getElementsByTagName(tag));
 	if (includeParent && el.tagName === tag.toUpperCase()) els.push(el);
 	
 	//filter them based on their class and clean function
@@ -90,7 +90,7 @@ export var cleanMap = {
 		}
 		
 		//if have no more styles, clean
-		if ([...el.classList].reduce((n, cls) => cls.startsWith(className) ? n+1 : n, 0) === 1) return true
+		if ([].reduce.call(el.classList, (n, cls) => cls.startsWith(className) ? n+1 : n, 0) === 1) return true
 		
 		return false
 	}
